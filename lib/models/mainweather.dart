@@ -40,7 +40,7 @@ class Coord {
 
 class Main {
   dynamic temp;
-  double? feelslike;
+  dynamic feelslike;
   double? tempmin;
   double? tempmax;
   dynamic pressure;

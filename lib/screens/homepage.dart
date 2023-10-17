@@ -44,11 +44,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   AssetImage setBgImage() {
-    if (_root?.weather?[0]?.description == "rain") {
+    if (_root?.weather?[0]?.description == "Rain") {
       return const AssetImage('images/rainy-bg.jpeg');
-    } else if (_root?.weather?[0]?.description == "snow") {
+    } else if (_root?.weather?[0]?.description == "Snow") {
       return const AssetImage('images/snow.jpeg');
-    } else if (_root?.weather?[0]?.description == "clear_sky") {
+    } else if (_root?.weather?[0]?.description == "Clear") {
       return const AssetImage('images/sunny-no-clouds.jpeg');
     } else {
       return const AssetImage('images/sunny-no-clouds.jpeg');
@@ -63,12 +63,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  String switchFeelsLike() {
+    if (celsius) {
+      return 'But it feels like ${(_main?.feelslike).toString().substring(0, 5)}°K';
+    } else {
+      return 'But it feels like ${(_main?.feelslike - 273).toString().substring(0, 4)}°C';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     fetchMain();
     fetchRootInfo();
     fetchWeather();
+    weatherapi.getHourlyData();
   }
 
   @override
@@ -91,10 +100,10 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 CurrentWeather(
-                  cityName: _root?.name.toString() ?? err,
-                  temperature: switchTemperature(),
-                  description: _weather?[0].description.toString() ?? err,
-                ),
+                    cityName: _root?.name.toString() ?? err,
+                    temperature: switchTemperature(),
+                    description: _weather?[0].description.toString() ?? err,
+                    feelsLike: switchFeelsLike()),
               ]),
       ),
     );

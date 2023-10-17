@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 
 class WeatherApi {
   String apiKey = '8d2c65d9e536a8efe0bcadcc9453209e';
+  String apiKeyOne = '2e262bf7136eca4d3638163305429c78';
   double latitude = 0;
   double longitude = 0;
   String city = "London";
@@ -17,7 +18,7 @@ class WeatherApi {
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey'));
     if (response.statusCode == 200) {
       var data = response.body;
-      print(data);
+
       var decodedJsonData = jsonDecode(data);
       return Root.fromJson(decodedJsonData);
     } else {
@@ -42,14 +43,6 @@ class WeatherApi {
     } else {
       throw Exception("An error has occured: ${response.statusCode}");
     }
-  }
-
-// From coordinates
-  Future<void> getAdress() async {
-    await getCurrentLocation();
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
-    print(placemarks);
   }
 
   getCurrentLocation() async {
@@ -81,12 +74,27 @@ class WeatherApi {
 
   Future<Main> getCurrentWeatherData() async {
     await getCurrentLocation();
+    await getHourlyData();
     Response response = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey'));
     if (response.statusCode == 200) {
       var data = response.body;
       var decodedJsonData = jsonDecode(data)['main'];
       return Main.fromJson(decodedJsonData);
+    } else {
+      throw Exception(
+          'An error has ocurred! Error code ${response.statusCode}');
+    }
+  }
+
+  Future<void> getHourlyData() async {
+    await getCurrentLocation();
+    Response response = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&appid=$apiKey'));
+    if (response.statusCode == 200) {
+      var data = response.body;
+      var decodedJsonData = jsonDecode(data);
+      List<dynamic> rawHourlyList = decodedJsonData['list'];
     } else {
       throw Exception(
           'An error has ocurred! Error code ${response.statusCode}');
