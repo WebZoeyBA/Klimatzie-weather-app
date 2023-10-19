@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:klimatzie/models/mainweather.dart';
+import 'package:klimatzie/models/hourly.dart' as hourly;
+import 'package:klimatzie/models/mainweather.dart' as mainweather;
 import 'package:geocoding/geocoding.dart';
 
 class WeatherApi {
@@ -12,7 +13,7 @@ class WeatherApi {
   double longitude = 0;
   String city = "London";
 
-  Future<Root> getRootInfo() async {
+  Future<mainweather.Root> getRootInfo() async {
     await getCurrentLocation();
     Response response = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey'));
@@ -20,13 +21,13 @@ class WeatherApi {
       var data = response.body;
 
       var decodedJsonData = jsonDecode(data);
-      return Root.fromJson(decodedJsonData);
+      return mainweather.Root.fromJson(decodedJsonData);
     } else {
       throw Exception("An error has occured: ${response.statusCode}");
     }
   }
 
-  Future<List<Weather>> getWeatherInfo() async {
+  Future<List<mainweather.Weather>> getWeatherInfo() async {
     await getCurrentLocation();
     Response response = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey'));
@@ -34,9 +35,9 @@ class WeatherApi {
       var data = response.body;
       var decodedJsonData = jsonDecode(data);
       List<dynamic> rawList = decodedJsonData['weather'];
-      List<Weather> weatherList = [];
+      List<mainweather.Weather> weatherList = [];
       for (var element in rawList) {
-        var content = Weather.fromJson(element);
+        var content = mainweather.Weather.fromJson(element);
         weatherList.add(content);
       }
       return weatherList;
@@ -72,7 +73,7 @@ class WeatherApi {
     }
   }
 
-  Future<Main> getCurrentWeatherData() async {
+  Future<mainweather.Main> getCurrentWeatherData() async {
     await getCurrentLocation();
     await getHourlyData();
     Response response = await http.get(Uri.parse(
@@ -80,14 +81,14 @@ class WeatherApi {
     if (response.statusCode == 200) {
       var data = response.body;
       var decodedJsonData = jsonDecode(data)['main'];
-      return Main.fromJson(decodedJsonData);
+      return mainweather.Main.fromJson(decodedJsonData);
     } else {
       throw Exception(
           'An error has ocurred! Error code ${response.statusCode}');
     }
   }
 
-  Future<void> getHourlyData() async {
+  Future<List<hourly.ListElement>> getHourlyData() async {
     await getCurrentLocation();
     Response response = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&appid=$apiKey'));
@@ -95,6 +96,12 @@ class WeatherApi {
       var data = response.body;
       var decodedJsonData = jsonDecode(data);
       List<dynamic> rawHourlyList = decodedJsonData['list'];
+      List<hourly.ListElement> hourlyList = [];
+      for (var element in rawHourlyList) {
+        var content = hourly.ListElement.fromJson(element);
+        hourlyList.add(content);
+      }
+      return hourlyList;
     } else {
       throw Exception(
           'An error has ocurred! Error code ${response.statusCode}');

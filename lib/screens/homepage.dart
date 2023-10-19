@@ -3,6 +3,7 @@ import 'package:klimatzie/models/mainweather.dart';
 import 'package:klimatzie/services/weather_api.dart';
 import 'package:klimatzie/widgets/currentWeather.dart';
 import 'package:klimatzie/widgets/tempUnit.dart';
+import 'package:klimatzie/widgets/weatherByHour.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -104,6 +105,7 @@ class _HomePageState extends State<HomePage> {
                     temperature: switchTemperature(),
                     description: _weather?[0].description.toString() ?? err,
                     feelsLike: switchFeelsLike()),
+                const ByHour(),
               ]),
       ),
     );
