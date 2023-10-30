@@ -39,6 +39,8 @@ dependencies:
   http: ^1.1.0
   flutter_geocoder: ^0.2.2-nullsafety
   geocoding: ^2.1.1
+  intl: ^0.18.1
+  weather_icons: ^3.0.0
 
 dev_dependencies:
   flutter_test:

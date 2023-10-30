@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klimatzie/screens/homepage.dart';
 import 'package:klimatzie/screens/wall_page.dart';
 import 'package:klimatzie/theme/themedata.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: amazonThemeData,
-      home: WallPage(),
+      home: const HomePage(),
     );
   }
 }

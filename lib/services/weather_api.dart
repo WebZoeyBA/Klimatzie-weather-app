@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:klimatzie/models/hourly.dart' as hourly;
 import 'package:klimatzie/models/mainweather.dart' as mainweather;
-import 'package:geocoding/geocoding.dart';
+import 'package:klimatzie/models/pollution.dart' as pollution;
 
 class WeatherApi {
   String apiKey = '8d2c65d9e536a8efe0bcadcc9453209e';
@@ -105,6 +105,21 @@ class WeatherApi {
     } else {
       throw Exception(
           'An error has ocurred! Error code ${response.statusCode}');
+    }
+  }
+
+  Future<pollution.Main> getPolutionData() async {
+    await getCurrentLocation();
+    Response response = await http.get(Uri.parse(
+        'http://api.openweathermap.org/data/2.5/air_pollution?lat=$latitude&lon=$longitude&appid=$apiKey'));
+    if (response.statusCode == 200) {
+      var data = response.body;
+      var decodedJsonData = jsonDecode(data)['list'][0]['main'];
+      print(decodedJsonData);
+      return pollution.Main.fromJson(decodedJsonData);
+    } else {
+      throw Exception(
+          'An error has occured! Error code ${response.statusCode}');
     }
   }
 }

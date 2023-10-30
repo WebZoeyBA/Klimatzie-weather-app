@@ -40,12 +40,12 @@ class _WallPageState extends State<WallPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              OutlinedButton(
+              IconButton(
                   onPressed: () async {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const HomePage()));
                   },
-                  child: Text("Get Location"))
+                  icon: const Icon(Icons.power))
             ],
           ),
         ));
